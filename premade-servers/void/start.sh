@@ -26,7 +26,7 @@ fi
 
 cp -f /opt/minerift/plugins/ViaVersion.jar "${DATA_DIR}/plugins/ViaVersion.jar"
 cp -f /opt/minerift/plugins/ViaBackwards.jar "${DATA_DIR}/plugins/ViaBackwards.jar"
-cp -f /opt/minerift/plugins/Chunky.jar "${DATA_DIR}/plugins/Chunky.jar"
+cp -f /opt/minerift/plugins/FastAsyncWorldEdit.jar "${DATA_DIR}/plugins/FastAsyncWorldEdit.jar"
 
 cat > "${DATA_DIR}/eula.txt" <<'EOF'
 eula=true
