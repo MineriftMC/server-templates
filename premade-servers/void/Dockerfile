@@ -25,8 +25,9 @@ RUN apt-get update \
 WORKDIR /opt/minerift
 
 RUN mkdir -p /opt/minerift/plugins /opt/minerift/bin
-RUN groupadd --gid 1000 minerift \
-    && useradd --uid 1000 --gid 1000 --home-dir /data --no-create-home --shell /usr/sbin/nologin minerift \
+# the :25 base already has a uid/gid 1000, so reuse it if present
+RUN (getent group 1000 || groupadd --gid 1000 minerift) \
+    && (getent passwd 1000 || useradd --uid 1000 --gid 1000 --home-dir /data --no-create-home --shell /usr/sbin/nologin minerift) \
     && chown -R 1000:1000 /opt/minerift
 
 RUN PAPER_BUILD_JSON="$(curl -fsSL -A "minerift-docker-build" "${PAPER_BUILDS_JSON}")" \
