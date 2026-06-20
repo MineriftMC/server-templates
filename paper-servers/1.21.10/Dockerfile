@@ -44,6 +44,22 @@ RUN chmod +x /opt/minerift/bin/start.sh \
     && printf '#!/usr/bin/env bash\nset -euo pipefail\nprintf \"%%s\\n\" \"$*\" > /proc/1/fd/0\n' > /usr/local/bin/mc-send-to-console \
     && chmod +x /usr/local/bin/mc-send-to-console
 
+# hello there :)
+COPY <<'GREET' /etc/hello-my-name-is-anders-dingus
+hello, my name is anders dingus.
+GREET
+
+RUN cp /etc/hello-my-name-is-anders-dingus /etc/motd \
+    # franch fries for non login interactive bash
+    && printf '\n[ -t 1 ] && cat /etc/hello-my-name-is-anders-dingus 2>/dev/null\n' >> /etc/bash.bashrc \
+    && printf '#!/bin/sh\n[ -t 1 ] && cat /etc/hello-my-name-is-anders-dingus 2>/dev/null\n' > /etc/profile.d/zz-greet.sh \
+    && chmod +x /etc/profile.d/zz-greet.sh \
+    && printf 'cat /etc/hello-my-name-is-anders-dingus 2>/dev/null\n' > /etc/hello-my-name-is-anders-dingus.sh
+
+# read :grr:
+ENV BASH_ENV=/etc/hello-my-name-is-anders-dingus.sh
+ENV ENV=/etc/hello-my-name-is-anders-dingus.sh
+
 VOLUME ["/data"]
 EXPOSE 25565
 USER 1000:1000
