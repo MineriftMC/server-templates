@@ -51,7 +51,7 @@ COPY files/ /opt/minerift/files/
 COPY start.sh /opt/minerift/bin/start.sh
 
 RUN chmod +x /opt/minerift/bin/start.sh \
-    && printf '#!/usr/bin/env bash\nset -euo pipefail\nprintf "%%s\\n" "$*" > /proc/1/fd/0\n' > /usr/local/bin/mc-send-to-console \
+    && printf '#!/usr/bin/env bash\nset -euo pipefail\nCONSOLE_IN="${CONSOLE_IN:-/tmp/minecraft-console-in}"\nprintf "%%s\\n" "$*" > "$CONSOLE_IN"\n' > /usr/local/bin/mc-send-to-console \
     && chmod +x /usr/local/bin/mc-send-to-console
 
 # hello there :)

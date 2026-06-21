@@ -110,4 +110,18 @@ if paper_global_path.exists():
 PY
 
 cd "${DATA_DIR}"
-exec java -Xms"${JAVA_MIN_MEMORY}" -Xmx"${SERVER_MEMORY}" -jar "${PAPER_JAR_NAME}" --nogui
+
+# pipe for console input so mc-send-to-console can talk to the server
+CONSOLE_IN="${CONSOLE_IN:-/tmp/minecraft-console-in}"
+rm -f "${CONSOLE_IN}"
+mkfifo "${CONSOLE_IN}"
+
+# keep the write side open or java stdin get EOF and the console reader die.
+# this sleeper just hold the fifo open while server is alive
+sleep infinity > "${CONSOLE_IN}" &
+CONSOLE_HOLDER=$!
+trap 'kill "${CONSOLE_HOLDER}" 2>/dev/null; rm -f "${CONSOLE_IN}"' EXIT
+
+# feed the fifo into java stdin. exec swap the shell so java is child of tini
+# and get the signals right
+exec java -Xms"${JAVA_MIN_MEMORY}" -Xmx"${SERVER_MEMORY}" -jar "${PAPER_JAR_NAME}" --nogui < "${CONSOLE_IN}"
